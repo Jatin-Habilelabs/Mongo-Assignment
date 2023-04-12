@@ -1,0 +1,298 @@
+  
+Query without index:-------
+
+db.cities.find({"continent":"Asia","country":"South Korea"}).explain(true)
+ 
+
+output:--
+
+
+{
+    "explainVersion" : "1",
+    "queryPlanner" : {
+        "namespace" : "nodeJs.cities",
+        "indexFilterSet" : false,
+        "parsedQuery" : {
+            "$and" : [
+                {
+                    "continent" : {
+                        "$eq" : "Asia"
+                    }
+                },
+                {
+                    "country" : {
+                        "$eq" : "South Korea"
+                    }
+                }
+            ]
+        },
+        "maxIndexedOrSolutionsReached" : false,
+        "maxIndexedAndSolutionsReached" : false,
+        "maxScansToExplodeReached" : false,
+        "winningPlan" : {
+            "stage" : "COLLSCAN",
+            "filter" : {
+                "$and" : [
+                    {
+                        "continent" : {
+                            "$eq" : "Asia"
+                        }
+                    },
+                    {
+                        "country" : {
+                            "$eq" : "South Korea"
+                        }
+                    }
+                ]
+            },
+            "direction" : "forward"
+        },
+        "rejectedPlans" : [
+
+        ]
+    },
+    "executionStats" : {
+        "executionSuccess" : true,
+        "nReturned" : 2.0,
+        "executionTimeMillis" : 0.0,
+        "totalKeysExamined" : 0.0,
+        "totalDocsExamined" : 40.0,
+        "executionStages" : {
+            "stage" : "COLLSCAN",
+            "filter" : {
+                "$and" : [
+                    {
+                        "continent" : {
+                            "$eq" : "Asia"
+                        }
+                    },
+                    {
+                        "country" : {
+                            "$eq" : "South Korea"
+                        }
+                    }
+                ]
+            },
+            "nReturned" : 2.0,
+            "executionTimeMillisEstimate" : 0.0,
+            "works" : 42.0,
+            "advanced" : 2.0,
+            "needTime" : 39.0,
+            "needYield" : 0.0,
+            "saveState" : 0.0,
+            "restoreState" : 0.0,
+            "isEOF" : 1.0,
+            "direction" : "forward",
+            "docsExamined" : 40.0
+        },
+        "allPlansExecution" : [
+
+        ]
+    },
+    "command" : {
+        "find" : "cities",
+        "filter" : {
+            "continent" : "Asia",
+            "country" : "South Korea"
+        },
+        "$db" : "nodeJs"
+    },
+    "serverInfo" : {
+        "host" : "ac-xc0zzay-shard-00-02.fl1popj.mongodb.net",
+        "port" : 27017.0,
+        "version" : "5.0.15",
+        "gitVersion" : "935639beed3d0c19c2551c93854b831107c0b118"
+    },
+    "serverParameters" : {
+        "internalQueryFacetBufferSizeBytes" : 104857600.0,
+        "internalQueryFacetMaxOutputDocSizeBytes" : 104857600.0,
+        "internalLookupStageIntermediateDocumentMaxSizeBytes" : 16793600.0,
+        "internalDocumentSourceGroupMaxMemoryBytes" : 104857600.0,
+        "internalQueryMaxBlockingSortMemoryUsageBytes" : 33554432.0,
+        "internalQueryProhibitBlockingMergeOnMongoS" : 0.0,
+        "internalQueryMaxAddToSetBytes" : 104857600.0,
+        "internalDocumentSourceSetWindowFieldsMaxMemoryBytes" : 104857600.0
+    },
+    "ok" : 1.0,
+    "$clusterTime" : {
+        "clusterTime" : Timestamp(1680695762, 11),
+        "signature" : {
+            "hash" : BinData(0, "pulepxIHSfC8IRLGRCjuS00rDVE="),
+            "keyId" : NumberLong(7183689851781251078)
+        }
+    },
+    "operationTime" : Timestamp(1680695762, 11)
+}
+
+
+
+
+
+
+
+Query With Index:--------------------
+
+db.cities.find({"continent":"Asia","country":"South Korea"}).explain(true)
+
+output:-------
+{
+    "explainVersion" : "1",
+    "queryPlanner" : {
+        "namespace" : "nodeJs.cities",
+        "indexFilterSet" : false,
+        "parsedQuery" : {
+            "$and" : [
+                {
+                    "continent" : {
+                        "$eq" : "Asia"
+                    }
+                },
+                {
+                    "country" : {
+                        "$eq" : "South Korea"
+                    }
+                }
+            ]
+        },
+        "maxIndexedOrSolutionsReached" : false,
+        "maxIndexedAndSolutionsReached" : false,
+        "maxScansToExplodeReached" : false,
+        "winningPlan" : {
+            "stage" : "FETCH",
+            "inputStage" : {
+                "stage" : "IXSCAN",
+                "keyPattern" : {
+                    "continent" : 1.0,
+                    "country" : 1.0
+                },
+                "indexName" : "index",
+                "isMultiKey" : false,
+                "multiKeyPaths" : {
+                    "continent" : [
+
+                    ],
+                    "country" : [
+
+                    ]
+                },
+                "isUnique" : false,
+                "isSparse" : false,
+                "isPartial" : false,
+                "indexVersion" : 2.0,
+                "direction" : "forward",
+                "indexBounds" : {
+                    "continent" : [
+                        "[\"Asia\", \"Asia\"]"
+                    ],
+                    "country" : [
+                        "[\"South Korea\", \"South Korea\"]"
+                    ]
+                }
+            }
+        },
+        "rejectedPlans" : [
+
+        ]
+    },
+    "executionStats" : {
+        "executionSuccess" : true,
+        "nReturned" : 2.0,
+        "executionTimeMillis" : 1.0,
+        "totalKeysExamined" : 2.0,
+        "totalDocsExamined" : 2.0,
+        "executionStages" : {
+            "stage" : "FETCH",
+            "nReturned" : 2.0,
+            "executionTimeMillisEstimate" : 1.0,
+            "works" : 3.0,
+            "advanced" : 2.0,
+            "needTime" : 0.0,
+            "needYield" : 0.0,
+            "saveState" : 0.0,
+            "restoreState" : 0.0,
+            "isEOF" : 1.0,
+            "docsExamined" : 2.0,
+            "alreadyHasObj" : 0.0,
+            "inputStage" : {
+                "stage" : "IXSCAN",
+                "nReturned" : 2.0,
+                "executionTimeMillisEstimate" : 1.0,
+                "works" : 3.0,
+                "advanced" : 2.0,
+                "needTime" : 0.0,
+                "needYield" : 0.0,
+                "saveState" : 0.0,
+                "restoreState" : 0.0,
+                "isEOF" : 1.0,
+                "keyPattern" : {
+                    "continent" : 1.0,
+                    "country" : 1.0
+                },
+                "indexName" : "index",
+                "isMultiKey" : false,
+                "multiKeyPaths" : {
+                    "continent" : [
+
+                    ],
+                    "country" : [
+
+                    ]
+                },
+                "isUnique" : false,
+                "isSparse" : false,
+                "isPartial" : false,
+                "indexVersion" : 2.0,
+                "direction" : "forward",
+                "indexBounds" : {
+                    "continent" : [
+                        "[\"Asia\", \"Asia\"]"
+                    ],
+                    "country" : [
+                        "[\"South Korea\", \"South Korea\"]"
+                    ]
+                },
+                "keysExamined" : 2.0,
+                "seeks" : 1.0,
+                "dupsTested" : 0.0,
+                "dupsDropped" : 0.0
+            }
+        },
+        "allPlansExecution" : [
+
+        ]
+    },
+    "command" : {
+        "find" : "cities",
+        "filter" : {
+            "continent" : "Asia",
+            "country" : "South Korea"
+        },
+        "$db" : "nodeJs"
+    },
+    "serverInfo" : {
+        "host" : "ac-xc0zzay-shard-00-02.fl1popj.mongodb.net",
+        "port" : 27017.0,
+        "version" : "5.0.15",
+        "gitVersion" : "935639beed3d0c19c2551c93854b831107c0b118"
+    },
+    "serverParameters" : {
+        "internalQueryFacetBufferSizeBytes" : 104857600.0,
+        "internalQueryFacetMaxOutputDocSizeBytes" : 104857600.0,
+        "internalLookupStageIntermediateDocumentMaxSizeBytes" : 16793600.0,
+        "internalDocumentSourceGroupMaxMemoryBytes" : 104857600.0,
+        "internalQueryMaxBlockingSortMemoryUsageBytes" : 33554432.0,
+        "internalQueryProhibitBlockingMergeOnMongoS" : 0.0,
+        "internalQueryMaxAddToSetBytes" : 104857600.0,
+        "internalDocumentSourceSetWindowFieldsMaxMemoryBytes" : 104857600.0
+    },
+    "ok" : 1.0,
+    "$clusterTime" : {
+        "clusterTime" : Timestamp(1680695567, 10),
+        "signature" : {
+            "hash" : BinData(0, "BqR9yZ0WzXu2Ks88Ec5kRTNXU/I="),
+            "keyId" : NumberLong(7183689851781251078)
+        }
+    },
+    "operationTime" : Timestamp(1680695567, 10)
+}
+

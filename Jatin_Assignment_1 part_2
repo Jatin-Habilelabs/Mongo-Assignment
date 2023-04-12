@@ -1,0 +1,204 @@
+
+1)
+db.cities.aggregate([
+    { 
+        $match: { 
+            "continent": {
+                $in:["Asia","Europe" ]
+                          }
+                 } 
+     },
+])
+
+
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d38"),
+    "name" : "Seoul",
+    "country" : "South Korea",
+    "continent" : "Asia",
+    "population" : 25.674
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d39"),
+    "name" : "Mumbai",
+    "country" : "India",
+    "continent" : "Asia",
+    "population" : 19.98
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d3b"),
+    "name" : "Beijing",
+    "country" : "China",
+    "continent" : "Asia",
+    "population" : 19.618
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d3c"),
+    "name" : "Shanghai",
+    "country" : "China",
+    "continent" : "Asia",
+    "population" : 25.582
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d3d"),
+    "name" : "Osaka",
+    "country" : "Japan",
+    "continent" : "Asia",
+    "population" : 19.281
+}
+
+2)-------------------------------------------------------------------------	
+
+db.cities.aggregate([
+     {
+         $lookup:{
+             from:"dummy",
+             localField:"name",
+             foreignField:"name",
+             as:"Pop"
+         },
+     },
+
+])
+
+
+output:----
+
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d38"),
+    "name" : "Seoul",
+    "country" : "South Korea",
+    "continent" : "Asia",
+    "population" : 25.674,
+    "Pop" : [
+
+    ]
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d39"),
+    "name" : "Mumbai",
+    "country" : "India",
+    "continent" : "Asia",
+    "population" : 19.98,
+    "Pop" : [
+
+    ]
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d3a"),
+    "name" : "Lagos",
+    "country" : "Nigeria",
+    "continent" : "Africa",
+    "population" : 13.463,
+    "Pop" : [
+
+    ]
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d3b"),
+    "name" : "Beijing",
+    "country" : "China",
+    "continent" : "Asia",
+    "population" : 19.618,
+    "Pop" : [
+
+    ]
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d3c"),
+    "name" : "Shanghai",
+    "country" : "China",
+    "continent" : "Asia",
+    "population" : 25.582,
+    "Pop" : [
+
+    ]
+}
+{
+    "_id" : ObjectId("642c10b6e66ebc3644765d3d"),
+    "name" : "Osaka",
+    "country" : "Japan",
+    "continent" : "Asia",
+    "population" : 19.281,
+    "Pop" : [
+        {
+            "_id" : ObjectId("642c0cf6e66ebc3644765d20"),
+            "name" : "Osaka",
+            "continent" : "Asia",
+            "population" : 19.281
+        },
+        {
+            "_id" : ObjectId("642c0e9fe66ebc3644765d26"),
+            "name" : "Osaka",
+            "continent" : "Asia",
+            "population" : 19.281
+        },
+        {
+            "_id" : ObjectId("642c100be66ebc3644765d2c"),
+            "name" : "Osaka",
+            "continent" : "Asia",
+            "population" : 19.281
+        },
+        {
+            "_id" : ObjectId("642c1067e66ebc3644765d32"),
+            "name" : "Osaka",
+            "continent" : "Asia",
+            "population" : 19.281
+        }
+    ]
+}
+
+
+3)-----------------------------------------------------------------------
+
+db.cities.aggregate([
+    
+   { 
+   
+           $group: { 
+               _id: {
+               "continent":"$continent",
+               "country":"$country"
+                      },
+                        "lowest_population": { $min: "$population" },
+                    }
+         }, 
+])
+
+
+output:--
+
+{
+    "_id" : {
+        "continent" : "Africa",
+        "country" : "Nigeria"
+    },
+    "lowest_population" : 13.463
+}
+{
+    "_id" : {
+        "continent" : "Asia",
+        "country" : "Japan"
+    },
+    "lowest_population" : 19.281
+}
+{
+    "_id" : {
+        "continent" : "Asia",
+        "country" : "Bangladesh"
+    },
+    "lowest_population" : 19.578
+}
+
+4)---------------------------------------------------------
+db.cities.aggregate([
+        {
+            $project:{
+                _id:0,
+               population:"$lowest_population"
+            }
+        },
+        
+    
+     ])
+

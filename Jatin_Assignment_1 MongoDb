@@ -1,0 +1,55 @@
+Query:
+
+
+db.cities.aggregate([
+    { 
+        $match: { 
+            "continent": {
+                $in:["Asia","Europe" ]
+                          }
+                 } 
+     },
+     {
+         $lookup:{
+             from:"dummy",
+             localField:"name",
+             foreignField:"name",
+             as:"Pop"
+         },
+     },
+      { 
+        $unwind: "$Pop" 
+        },
+         { 
+   
+           $group: { 
+               _id: {
+               "continent":"$continent",
+               "country":"$country"
+                      },
+                        "lowest_population": { $min: "$population" },
+                    }
+         }, 
+        
+        {
+            $project:{
+                _id:0,
+               population:"$lowest_population"
+            }
+        },
+        
+    
+     ])
+
+Output:
+
+{
+    "population" : 15.4
+}
+{
+    "population" : 19.281
+}
+{
+    "population" : 19.578
+}
+
